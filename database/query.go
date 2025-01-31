@@ -9,6 +9,29 @@ type WpUploadsQuery struct {
 	db *gorm.DB
 }
 
+func (repo *WpUploadsQuery) SelectByLocalPath(localPath string) ([]WpUploads, error) {
+	// if the length of localPath or bucketPath  is more than 255
+	// we should cut short than 255 from prefix and to find
+	if len(localPath) > 255 {
+		localPath = localPath[len(localPath)-255:]
+	}
+
+	dataModel := []WpUploads{}
+	tx := repo.db.Where("origin_path = ?", localPath).First(&dataModel)
+	if tx.Error != nil {
+		if errors.Is(tx.Error, gorm.ErrRecordNotFound) {
+			return []WpUploads{}, nil
+		}
+		return []WpUploads{}, tx.Error
+	}
+
+	if tx.RowsAffected == 0 {
+		return []WpUploads{}, nil
+	}
+
+	return dataModel, nil
+}
+
 func (repo *WpUploadsQuery) SelectByNames(localPath string, bucketPath string) ([]WpUploads, error) {
 	// if the length of localPath or bucketPath  is more than 255
 	// we should cut short than 255 from prefix and to find
@@ -22,15 +45,6 @@ func (repo *WpUploadsQuery) SelectByNames(localPath string, bucketPath string) (
 
 	dataModel := []WpUploads{}
 
-	tx := repo.db.Where("origin_path = ? or bucket_path = ?", localPath, bucketPath).First(&dataModel)
-	if tx.Error != nil {
-		return []WpUploads{}, tx.Error
-	}
-	if tx.RowsAffected == 0 {
-		return []WpUploads{}, nil
-	}
-	// 分批次查询速度更快
-
 	//tx := repo.db.Where("origin_path = ? or bucket_path = ?", localPath, bucketPath).First(&dataModel)
 	//if tx.Error != nil {
 	//	return []WpUploads{}, tx.Error
@@ -38,6 +52,15 @@ func (repo *WpUploadsQuery) SelectByNames(localPath string, bucketPath string) (
 	//if tx.RowsAffected == 0 {
 	//	return []WpUploads{}, nil
 	//}
+
+	// for speed find just find origin_path
+	tx := repo.db.Where("origin_path = ?", localPath).First(&dataModel)
+	if tx.Error != nil {
+		return []WpUploads{}, tx.Error
+	}
+	if tx.RowsAffected == 0 {
+		return []WpUploads{}, nil
+	}
 
 	return dataModel, nil
 }

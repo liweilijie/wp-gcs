@@ -19,7 +19,7 @@ func main() {
 	app := config.InitConfig()
 
 	db := database.InitDB(*app)
-	database.InitialMigration(db)
+	//database.InitialMigration(db)
 
 	wpUploadsHandle := database.New(db)
 

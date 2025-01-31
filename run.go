@@ -28,7 +28,8 @@ func consumer(idx int, rep string, buff chan string, wpUploadsHandle database.Wp
 			//log.Infof("Consumer %d received from channel: %s=>%s", idx, p, bucketObj)
 
 			// use p or bucketObj to find one in mysql
-			contents, err := wpUploadsHandle.SelectByNames(p, bucketObj)
+			//contents, err := wpUploadsHandle.SelectByNames(p, bucketObj)
+			contents, err := wpUploadsHandle.SelectByLocalPath(p)
 			if err != nil {
 				log.Errorf("%s or %s select from mysql error:%v\n", p, bucketObj, err)
 				continue

@@ -33,4 +33,5 @@ func InitialMigration(db *gorm.DB) {
 type WpUploadsHandle interface {
 	Insert(WpUploads) error
 	SelectByNames(localPath string, bucketPath string) ([]WpUploads, error)
+	SelectByLocalPath(localPath string) ([]WpUploads, error)
 }
