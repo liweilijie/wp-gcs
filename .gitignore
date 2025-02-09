@@ -27,5 +27,4 @@ go.work.sum
 wp-gcs
 *.json
 *.html
-*.yml
 *.log

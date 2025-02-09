@@ -18,6 +18,10 @@ UPDATE wp_posts SET post_content = REPLACE (post_content, 'https://news.china.co
 UPDATE wp_posts SET post_content_filtered = REPLACE (post_content_filtered, 'src="https://news.china.com.au//wp-content/', 'src="https://cdn.china.com.au/wp-content/');
 UPDATE wp_posts SET post_content_filtered = REPLACE (post_content_filtered, 'src="https://news.china.com.au/wp-content/', 'src="https://cdn.china.com.au/wp-content/');
 
+-- replace subtitle image of wp_termmeta
+UPDATE wp_termmeta SET meta_value = REPLACE (meta_value, 'https://news.china.com.au/wp-content/uploads', 'https://cdn.china.com.au/wp-content/uploads');
+
+
 -- https://myqqjd.com/1579.html
 -- https://www.ypojie.com/5847.html
 -- https://www.wpzzq.com/1019.html
